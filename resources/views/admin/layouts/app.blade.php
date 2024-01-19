@@ -20,9 +20,8 @@
         <div id="sidebar-wrapper">
             <div class="border-bottom sidebar-heading">
                 <strong class="text-white">
-                    Admin Singa
+                    Inventory Information
                 </strong>
-                <img src="https://www.singa.id/assets/images/leona-3d/leona-1.png" style="width: 50px" alt="">
             </div>
             <div class="list-group list-group-flush">
                 {{-- @php
@@ -32,8 +31,13 @@
                 {{-- @if (isset($menuItem['route'])) href="{{ route($menuItem['route']) }}" @endif
                     @if (isset($menuItem['onclick'])) onclick="{{ $menuItem['onclick'] }}" @endif> --}}
                 {{-- {{ $menuItem['text'] }} --}}
-                <a class="list-group-item p-3">User</a>
-                <a class="list-group-item p-3">Products</a>
+                <a class="list-group-item p-3" href="{{ route('admin.user.view') }}">
+                    User
+                </a>
+                <a class="list-group-item p-3" href="{{ route('admin.product.view') }}">
+                    Products
+                </a>
+                <a class="list-group-item p-3 cursor-pointer" onclick="doLogout()">Logout</a>
             </div>
         </div>
         <!-- Page content wrapper-->
@@ -41,7 +45,8 @@
             <div class="d-flex justify-content-between align-items-center border-start  pb-3 pt-4">
                 <div class="col-md-2 col-xs-3">
                     <button class="btn btn-dark  ms-3  mt-3" id="sidebarToggle">
-                        <i class="fas fa-bars"></i>
+                        {{-- <i class="fas fa-bars"></i> --}}
+                        Close
                     </button>
                 </div>
                 <div class="col-md-2 col-xs-3">
@@ -84,9 +89,11 @@
     <div class="modal">
         <!-- Place at bottom of page -->
     </div>
-    <form id="logout-form" action="{{ route('admin.logout.execute') }}" method="POST" style="display: none;">
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
+
+    @include('admin.layouts._footer')
 
     <script>
         $(document).ready(function() {

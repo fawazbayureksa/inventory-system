@@ -22,6 +22,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    public function loginIndex()
+    {
+        return view('auth.login');
+    }
+
     public function login()
     {
         $credentials = request(['email', 'password']);
