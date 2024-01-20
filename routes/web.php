@@ -19,7 +19,7 @@ use App\Http\Controllers\AuthController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 Auth::routes();
@@ -43,5 +43,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user.view');
         Route::get('/product', [AdminProductController::class, 'index'])->name('admin.product.view');
+        Route::post('/product', [AdminProductController::class, 'create'])->name('admin.product.create');
+        Route::post('/product/update', [AdminProductController::class, 'update'])->name('admin.product.update');
+        Route::post('/product/delete/{id}', [AdminProductController::class, 'delete'])->name('admin.product.delete');
     });
 });

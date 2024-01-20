@@ -24,20 +24,14 @@
                 </strong>
             </div>
             <div class="list-group list-group-flush">
-                {{-- @php
-                        $isActive = isset($menuItem['route']) && str_contains(request()->url(), $menuItem['url']);
-                        $class = 'list-group-item p-3 ' . ($isActive ? 'bg-white text-dark' : 'text-white');
-                    @endphp --}}
-                {{-- @if (isset($menuItem['route'])) href="{{ route($menuItem['route']) }}" @endif
-                    @if (isset($menuItem['onclick'])) onclick="{{ $menuItem['onclick'] }}" @endif> --}}
-                {{-- {{ $menuItem['text'] }} --}}
-                <a class="list-group-item p-3" href="{{ route('admin.user.view') }}">
+                <a class="list-group-item bg-color-3652AD p-3 text-white" href="{{ route('admin.user.view') }}">
                     User
                 </a>
-                <a class="list-group-item p-3" href="{{ route('admin.product.view') }}">
+                <a class="list-group-item p-3 bg-color-3652AD p-3 text-white" href="{{ route('admin.product.view') }}">
                     Products
                 </a>
-                <a class="list-group-item p-3 cursor-pointer" onclick="doLogout()">Logout</a>
+                <a class="list-group-item p-3 cursor-pointer bg-color-3652AD p-3 text-white"
+                    onclick="doLogout()">Logout</a>
             </div>
         </div>
         <!-- Page content wrapper-->
@@ -51,8 +45,8 @@
                 </div>
                 <div class="col-md-2 col-xs-3">
                     <div class="d-flex align-items-center">
-                        <img src="https://www.singa.id/assets/images/leona-3d/leona-ojk.png" class="me-3"
-                            style="border: 1px;border-radius:50%;width:50px" alt="">
+                        <img src="https://img.freepik.com/premium-photo/man-wearing-glasses-smiling_81048-29604.jpg?w=740"
+                            class="me-3" style="border: 1px;border-radius:50%;width:50px" alt="">
                         <strong class="text-dark">{{ Auth::user()->name }}</strong>
                     </div>
                 </div>

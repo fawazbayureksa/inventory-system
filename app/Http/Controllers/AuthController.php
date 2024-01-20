@@ -32,12 +32,13 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
         // dd($credentials);
         if (!Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            // return response()->json(['error' => 'Unauthorized'], 401);
+            return redirect()->route('login.view');
         }
-
 
         $token = session()->getId(); // Using session ID as a simple token for web authentication
         $this->respondWithToken($token);
+        // dd($token);
         return redirect()->intended('/admin/dashboard');
     }
 

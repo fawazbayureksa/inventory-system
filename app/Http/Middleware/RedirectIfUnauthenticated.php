@@ -17,19 +17,14 @@ class RedirectIfUnauthenticated
      */
     public function handle(Request $request, Closure $next)
     {
-        // dd(Auth::user()->is_active);
+        // dd(Auth::user());
         if (!Auth::check()) {
             return redirect('/auth/login');
         }
-
-        $user = Auth::user();
-
-        if (!$user->is_active) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect('/auth/login');
-        }
+        // Auth::logout();
+        // $request->session()->invalidate();
+        // $request->session()->regenerateToken();
+        // return redirect('/auth/login');
 
         return $next($request);
     }
