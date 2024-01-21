@@ -5,19 +5,11 @@
 <head>
     @include('admin.layouts._header')
 </head>
-@section('custom-css')
-    <style>
-        .active {
-            background-color: #93cfac !important;
-            color: #93cfac !important;
-        }
-    </style>
-@endsection
 
 <body>
     <div class="d-flex" id="wrapper">
         <!-- Sidebar-->
-        <div id="sidebar-wrapper">
+        <div id="sidebar-wrapper" style="position: fixed;">
             <div class="border-bottom sidebar-heading">
                 <strong class="text-white">
                     Inventory Information
@@ -35,12 +27,12 @@
             </div>
         </div>
         <!-- Page content wrapper-->
-        <div id="page-content-wrapper">
-            <div class="d-flex justify-content-between align-items-center border-start  pb-3 pt-4">
+        <div id="page-content-wrapper" style="margin-left: 16%">
+            <div class="d-flex justify-content-between align-items-center border-start pt-3">
                 <div class="col-md-2 col-xs-3">
                     <button class="btn btn-dark  ms-3  mt-3" id="sidebarToggle">
                         {{-- <i class="fas fa-bars"></i> --}}
-                        Close
+                        Sidebar toggle
                     </button>
                 </div>
                 <div class="col-md-2 col-xs-3">
@@ -51,7 +43,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container-fluid p-3 mt-3">
+            <div class="container mt-3">
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -78,10 +70,6 @@
                 @yield('content')
             </div>
         </div>
-    </div>
-
-    <div class="modal">
-        <!-- Place at bottom of page -->
     </div>
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('product_name');
             $table->string('image');
             $table->integer('qty');
-            $table->decimal('price', 10, 2);
+            $table->decimal('sell_price', 10, 2);
+            $table->decimal('buy_price', 10, 2);
             $table->string('categories');
             $table->softDeletes();
             $table->timestamps();
