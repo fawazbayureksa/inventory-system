@@ -29,14 +29,43 @@ cd inventory-system
 ### Installation
 
 **Composer Installation**
+
 ```
 composer install
 ```
 
-### Setup Environment Variables
- Edit the .env file to include your database configuration
+```
+php artisan key:generate
+```
 
+```
+php artisan storage:link
+```
+
+next, then run 
+```
+php artisan migrate --seed
+```
+
+```
+php artisan server
+```
+
+then you can use this account below to login 
+
+email: superadmin@gmail.com
+password: password
+
+### Setup Environment Variables
+ Create & edit the .env file to include your database configuration
+
+to create jwt secret key .env
+```
+php artisan jwt:secret
+```
  ### Dependencies
  - laravel/ui
  - twbs/bootstrap
  - tymon/jwt-auth
+
+## Thank You
