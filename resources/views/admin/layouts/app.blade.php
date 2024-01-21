@@ -28,13 +28,7 @@
         </div>
         <!-- Page content wrapper-->
         <div id="page-content-wrapper" style="margin-left: 16%">
-            <div class="d-flex justify-content-between align-items-center border-start pt-3">
-                <div class="col-md-2 col-xs-3">
-                    <button class="btn btn-dark  ms-3  mt-3" id="sidebarToggle">
-                        {{-- <i class="fas fa-bars"></i> --}}
-                        Sidebar toggle
-                    </button>
-                </div>
+            <div class="d-flex justify-content-end align-items-center border-start pt-3">
                 <div class="col-md-2 col-xs-3">
                     <div class="d-flex align-items-center">
                         <img src="https://img.freepik.com/premium-photo/man-wearing-glasses-smiling_81048-29604.jpg?w=740"

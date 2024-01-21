@@ -34,13 +34,17 @@
                         </thead>
                         <tbody>
                             @foreach ($products as $key => $item)
-                                <tr data-operation="{{ $item }}" class="text-center">
+                                <tr data-product="{{ $item }}" class="text-center">
                                     <td>{{ $item->product_name }}</td>
-                                    <td><img src="{{ $item->image }}" width="150" alt=""></td>
+                                    <td><img src="{{ asset($item->image) }}" width="150" alt=""></td>
                                     <td>{{ $item->qty }}</td>
-                                    <td>Rp{{ $item->buy_price }}</td>
-                                    <td>Rp{{ $item->sell_price }}</td>
-                                    <td></td>
+                                    <td>Rp{{ number_format($item->buy_price) }}</td>
+                                    <td>Rp{{ number_format($item->sell_price) }}</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" onclick="editProduct(this)">Edit</button>
+                                        <button class="btn btn-danger btn-sm" data-href={{ route('admin.product.delete') }}
+                                            onclick="deleted(this)">Delete</button>
+                                    </td>
                                 </tr>
                             @endforeach
                             @if (count($products) < 1)
@@ -63,7 +67,8 @@
                                 <button type="button" class="close btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form action="{{ route('admin.product.create') }}" method="post" class="p-3">
+                            <form action="{{ route('admin.product.create') }}" method="post" class="p-3"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
                                     <label for="name">Product Name:</label>
@@ -72,12 +77,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="value">Buy Price:</label>
-                                    <input type="number" class="form-control" id="price" name="buy_price"
+                                    <input type="number" class="form-control" id="buy_price" name="buy_price"
                                         value="{{ old('buy_price') }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="value">Sell Price:</label>
-                                    <input type="number" class="form-control" id="price" name="sell_price"
+                                    <input type="number" class="form-control" id="sell_price" name="sell_price"
                                         value="{{ old('sell_price') }}">
                                 </div>
                                 <div class="form-group">
@@ -102,21 +107,27 @@
                         <div class="modal-content" id="modalEdit">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="staticBackdropLabel">Edit Product</h5>
-                                <button type="button" class="close btn-close" data-dismiss="modal"
+                                <button type="button" class="close btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form action="{{ route('admin.product.update') }}" method="post" class="p-3">
+                            <form action="{{ route('admin.product.update') }}" method="post" class="p-3"
+                                enctype="multipart/form-data">
                                 @csrf
-                                <input type="hidden" name="id" id="product_id">
+                                <input type="hidden" name="product_id" id="product_id">
                                 <div class="form-group">
                                     <label for="name">Product Name:</label>
                                     <input type="text" class="form-control" id="product_name" name="product_name"
                                         value="{{ old('product_name') }}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="value">Price:</label>
-                                    <input type="number" class="form-control" id="price" name="price"
-                                        value="{{ old('price') }}">
+                                    <label for="value">Buy Price:</label>
+                                    <input type="number" class="form-control" id="buy_price" name="buy_price"
+                                        value="{{ old('buy_price') }}" step="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="value">Sell Price:</label>
+                                    <input type="number" class="form-control" id="sell_price" name="sell_price"
+                                        value="{{ old('sell_price') }}" step="1">
                                 </div>
                                 <div class="form-group">
                                     <label for="value">Qty:</label>
@@ -125,8 +136,9 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="image">Image:</label>
-                                    <input type="text" class="form-control" id="image" name="image"
+                                    <input type="file" class="form-control" id="image" name="image"
                                         value="{{ old('image') }}">
+                                    <div id="imageUrl"></div>
                                 </div>
                                 <div class="d-flex justify-content-end mt-3">
                                     <button type="submit" class="btn btn-success ms-2 w-25">Simpan</button>
@@ -147,8 +159,37 @@
 
 @section('custom-js')
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
 
     <script>
+        const storageUrl = "{{ url('/') }}/";
+        $(document).ready(function() {
+            $('#buy_price').on('input', function() {
+                // Allow only numeric input
+                $(this).val(function(index, value) {
+                    return value.replace(/[^0-9]/g, '');
+                });
+            });
+            $('#sell_price').on('input', function() {
+                // Allow only numeric input
+                $(this).val(function(index, value) {
+                    return value.replace(/[^0-9]/g, '');
+                });
+            });
+            $('#editModal #buy_price').on('input', function() {
+                // Allow only numeric input
+                $(this).val(function(index, value) {
+                    return value.replace(/[^0-9]/g, '');
+                });
+            });
+            $('#editModal #sell_price').on('input', function() {
+                // Allow only numeric input
+                $(this).val(function(index, value) {
+                    return value.replace(/[^0-9]/g, '');
+                });
+            });
+        });
+
         // $("#ButtonProductModal").on('click', function() {
         //     // console.log("Add Product Modal");
         //     $("#addProductModal").show();
@@ -168,26 +209,38 @@
             }
         }
 
-        function editData(el) {
-            let operation = $(el).closest('tr').data("operation");
-            $("#modalEdit #id_data").val(operation.id);
-            $("#modalEdit #name").val(operation.name);
-            $("#modalEdit #value").val(operation.value);
-            $("#modalEdit #second_name").val(operation.second_name);
-            $("#modalEdit #second_value").val(operation.second_value);
-            $("#modalEdit #asset_url").val(operation.asset_url);
+        function editProduct(el) {
+            let product = $(el).closest('tr').data("product");
+            let imageUrl = "";
+            if (product.image.includes('https')) {
+                imageUrl = product.image;
+            } else {
+                imageUrl = storageUrl + product.image;
+            }
+            console.log(imageUrl);
+            $("#modalEdit #product_id").val(product.id);
+            $("#modalEdit #product_name").val(product.product_name);
+            $("#modalEdit #buy_price").val(product.buy_price);
+            $("#modalEdit #sell_price").val(product.sell_price);
+            $("#modalEdit #qty").val(product.qty);
+            // $("#modalEdit #image").val(product.image);
+            $("#modalEdit #imageUrl").empty();
+            $("#modalEdit #imageUrl").append(
+                `<img src="${imageUrl}" width="100px" class="mt-3 rounded" alt="" />`);
+
+            $('#editModal').modal('show');
         }
 
         function deleted(el) {
-            let operation = $(el).closest('tr').data('operation');
+            let product = $(el).closest('tr').data("product");
             let action = $(el).data('href');
-            let confirmation = confirm("Lanjutkan untuk menghapus data dengan nama " + operation.name + "?");
+            let confirmation = confirm("Are you sure delete " + product.product_name + "?");
 
             if (confirmation) {
                 $("#submit-form div").empty();
                 $("#submit-form").attr("action", action);
                 $("#submit-form").attr("method", "POST");
-                $("#submit-form div").append('<input type="hidden" name="id" value="' + operation.id + '" />');
+                $("#submit-form div").append('<input type="hidden" name="id" value="' + product.id + '" />');
                 $("#submit-form").submit();
             }
         }

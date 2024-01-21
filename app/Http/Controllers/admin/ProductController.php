@@ -25,13 +25,12 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_name' => 'required|string|max:1000',
-            'buy_price'    => 'required',
-            'sell_price'   => 'required',
-            'qty'          => 'required',
-            'image'        => 'required',
-            // 'content' => 'required|string|max:1000',
-            // 'url_file' => 'required|string|max:1000',
+            'buy_price'    => 'required|integer',
+            'sell_price'   => 'required|integer',
+            'qty'          => 'required|integer',
+            'image'        => 'required|max:100', //100kb 
         ]);
+        // dd($request->all());
 
         if ($validator->fails()) {
             // Handle validation failure, re-display the form with errors
@@ -43,9 +42,66 @@ class ProductController extends Controller
         $product->buy_price     = $request->input('buy_price');
         $product->sell_price    = $request->input('sell_price');
         $product->qty           = $request->input('qty');
-        $product->image         = $request->input('image');
+
+
+        if ($request->hasFile('image')) {
+            $image                  = $request->file('image');
+            $fileName               = time() . '_image_' . $image->getClientOriginalName();
+            $image->storeAs('public', $fileName);
+
+            // You can also store the path in the database if needed
+            $product_url            = 'storage/' . $fileName;
+            $product->image         = $product_url;
+        }
+
         $product->save();
-        return redirect()->back()->with('success', 'Email Berhasil Terkirim');
+        return redirect()->back()->with('success', 'Product saved successfully');
+    }
+    public function update(Request $request)
+    {
+        $product = Product::findOrFail($request->product_id);
+
+        $validator = Validator::make($request->all(), [
+            'product_name' => 'required|string|max:1000',
+            'buy_price'    => 'required|integer',
+            'sell_price'   => 'required|integer',
+            'qty'          => 'required|integer',
+            'image'        => 'max:100', //100kb 
+        ]);
+
+        if ($validator->fails()) {
+            // Handle validation failure, re-display the form with errors
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }
+
+
+        $product->product_name  = $request->input('product_name');
+        $product->buy_price     = $request->input('buy_price');
+        $product->sell_price    = $request->input('sell_price');
+        $product->qty           = $request->input('qty');
+
+        if ($request->hasFile('image')) {
+            $image                  = $request->file('image');
+            $fileName               = time() . '_image_' . $image->getClientOriginalName();
+            $image->storeAs('public', $fileName);
+
+            // You can also store the path in the database if needed
+            $product_url            = 'storage/' . $fileName;
+            $product->image         = $product_url;
+        }
+
+        $product->save();
+
+        return redirect()->back()->with('success', 'Product has been successfully updated.');
+    }
+    public function delete(Request $request)
+    {
+        $product = Product::findOrFail($request->id);
+
+        // Delete the product
+        $product->delete();
+
+        return redirect()->back()->with(['success' => 'Product has been successfully deleted.']);
     }
     // public function UploadFile(Request $request)
     // {
